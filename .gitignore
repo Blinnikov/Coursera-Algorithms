@@ -1,15 +1,6 @@
-.idea
-.lift
-
-CREDITS
-01.Percolation/InteractivePercolationVisualizer.java
-01.Percolation/PercolationVisualizer.java
+*
+!01.Percolation/Percolation.java
+!01.Percolation/PercolationStats.java
 02.Queues
 03.Collinear
-CollidingDisks.java
 
-*.xml
-*.txt
-*.png
-*.class
-*.iml
