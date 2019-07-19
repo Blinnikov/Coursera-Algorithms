@@ -1,6 +1,8 @@
 *
 !01.Percolation/Percolation.java
 !01.Percolation/PercolationStats.java
-02.Queues
+!02.Queues/RandomizedQueue.java
+!02.Queues/Deque.java
+!02.Queues/Permutation.java
 03.Collinear
 
