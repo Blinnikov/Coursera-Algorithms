@@ -6,7 +6,7 @@ CREDITS
 01.Percolation/InteractivePercolationVisualizer.java
 02.Queues/ResizingArrayStack.java
 02.Queues/LinkedStack.java
-03.Collinear
+03.Collinear/LineSegment.java
 CollidingDisks.java
 
 *.xml
@@ -14,4 +14,3 @@ CollidingDisks.java
 *.png
 *.class
 *.iml
-
