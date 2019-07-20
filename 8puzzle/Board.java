@@ -13,6 +13,9 @@ import java.util.LinkedList;
 public class Board {
     private final int n;
     private int[][] tiles;
+    // private final Location emptyTile;
+    private int twinOriginOrder;
+    private int twinDestinationOrder;
 
     // create a board from an n-by-n array of tiles,
     // where tiles[row][col] = tile at (row, col)
@@ -25,6 +28,16 @@ public class Board {
                 this.tiles[i][j] = tiles[i][j];
             }
         }
+
+        Location emptyTile = this.findEmptyTile();
+        int zeroTileOrder = emptyTile.row * this.n + emptyTile.column + 1;
+        final int maxOrder = this.n * this.n + 1;
+
+        do {
+            twinOriginOrder = StdRandom.uniform(1, maxOrder);
+            twinDestinationOrder = StdRandom.uniform(1, maxOrder);
+        } while (twinOriginOrder == twinDestinationOrder || twinOriginOrder == zeroTileOrder
+                || twinDestinationOrder == zeroTileOrder);
     }
 
     private class Location {
@@ -131,7 +144,7 @@ public class Board {
     // all neighboring boards
     public Iterable<Board> neighbors() {
         LinkedList<Board> availableNeighbors = new LinkedList<Board>();
-        Location emptyTile = findEmptyTile();
+        Location emptyTile = this.findEmptyTile();
 
         if (emptyTile.column > 0) {
             Location leftLocation = new Location(emptyTile.row, emptyTile.column - 1);
@@ -168,27 +181,11 @@ public class Board {
 
     // a board that is obtained by exchanging any pair of tiles
     public Board twin() {
-        Location emptyTile = this.findEmptyTile();
         Board result = new Board(this.tiles);
 
-        int originOrder;
-        int destinationOrder;
-        int zeroTileOrder = emptyTile.row * this.n + emptyTile.column + 1;
-
-        // StdOut.printf("Zero at [%s, %s](%s)\n", emptyTile.row, emptyTile.column, zeroTileOrder);
-
-        final int maxOrder = this.n * this.n + 1;
-
-        do {
-            originOrder = StdRandom.uniform(1, maxOrder);
-            destinationOrder = StdRandom.uniform(1, maxOrder);
-        } while (originOrder == destinationOrder || originOrder == zeroTileOrder
-                || destinationOrder == zeroTileOrder);
-
-
-        Location origin = new Location(originOrder);
+        Location origin = new Location(twinOriginOrder);
         // StdOut.printf("Origin at [%s, %s](%s)\n", origin.row, origin.column, originOrder);
-        Location destination = new Location(destinationOrder);
+        Location destination = new Location(twinDestinationOrder);
         // StdOut.printf("Destination at [%s, %s](%s)\n", destination.row, destination.column,
         //               destinationOrder);
         swapLocations(result.tiles, origin, destination);
@@ -221,7 +218,8 @@ public class Board {
         // testImmutability();
         // testDistances();
         // testNeighbors();
-        testTwins();
+        testNeighbors2();
+        // testTwins();
     }
 
     private static void testImmutability() {
@@ -263,13 +261,35 @@ public class Board {
                 { 7, 8, 6 }
         };
 
-
         Board boardWithNeighbors = new Board(neighborTiles);
         StdOut.printf("\n\nChecking neighbors:\nOriginal board:\n%s", boardWithNeighbors);
         StdOut.printf("Its neighbors:\n");
 
         for (Board b : boardWithNeighbors.neighbors()) {
             StdOut.printf("%s\n", b);
+        }
+    }
+
+    private static void testNeighbors2() {
+        int[][] tiles = {
+                { 0, 1, 3 },
+                { 4, 2, 5 },
+                { 7, 8, 6 }
+        };
+        Board board = new Board(tiles);
+
+        int neighborsCount = 0;
+        StdOut.printf("\n\nChecking neighbors:\nOriginal board:\n%s", board);
+        StdOut.printf("Neighbors of neighbors:\n");
+
+        for (Board child : board.neighbors()) {
+            StdOut.printf("Child board:\n%s\n", child);
+            StdOut.printf("\tIts neighbours (2nd level):\n");
+            for (Board grandChild : child.neighbors()) {
+                ++neighborsCount;
+                StdOut.printf("\tTotal # %d\n", neighborsCount);
+                StdOut.printf("\t%s\n", grandChild);
+            }
         }
     }
 
