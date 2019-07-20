@@ -10,6 +10,7 @@ CREDITS
 8puzzle/PuzzleChecker.java
 CollidingDisks.java
 
+*.zip
 *.xml
 *.txt
 *.png
