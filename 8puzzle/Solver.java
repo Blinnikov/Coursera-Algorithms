@@ -94,7 +94,11 @@ public class Solver {
 
     // min number of moves to solve initial board
     public int moves() {
-        return this.outcome.moves;
+        if (this.isSolvable()) {
+            return this.outcome.moves;
+        }
+
+        return -1;
     }
 
     // sequence of boards in a shortest solution
