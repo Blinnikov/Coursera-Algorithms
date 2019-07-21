@@ -4,6 +4,7 @@
  *  Description:
  **************************************************************************** */
 
+import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.Stack;
 import edu.princeton.cs.algs4.StdOut;
@@ -39,8 +40,7 @@ public class Solver {
         }
     }
 
-    private final SearchNode originalOutcome;
-    private final SearchNode twinOutcome = null;
+    private final SearchNode outcome;
 
     // find a solution to the initial board (using the A* algorithm)
     public Solver(Board initial) {
@@ -56,48 +56,52 @@ public class Solver {
         MinPQ<SearchNode> twinQueue = new MinPQ<SearchNode>(BY_MANHATTAN_DISTANCE);
         twinQueue.insert(twinSearchNode);
 
-        this.originalOutcome = this.solve(originalQueue);
-        // this.twinOutcome = this.solve(twinQueue);
-        // StdOut.printf("Solution with %s moves --- :\n%s", this.originalOutcome.moves,
-        //               this.originalOutcome.board);
+        this.outcome = this.solve(originalQueue, twinQueue);
     }
 
-    private SearchNode solve(MinPQ<SearchNode> queue) {
+    private SearchNode solve(MinPQ<SearchNode> queue, MinPQ<SearchNode> twinQueue) {
         SearchNode node = queue.delMin();
+        SearchNode twinNode = twinQueue.delMin();
 
-        while (!node.board.isGoal()) {
-            Iterable<Board> neighbors = node.board.neighbors();
-            for (Board neighbor : neighbors) {
-                if (node.previous != null && neighbor.equals(node.previous.board)) {
-                    continue;
-                }
-
-                int newMovesCount = node.moves + 1;
-                SearchNode nodeToInsert = new SearchNode(neighbor, newMovesCount, node);
-                queue.insert(nodeToInsert);
-            }
+        while (!node.board.isGoal() && !twinNode.board.isGoal()) {
+            this.insertNeighbors(queue, node);
+            this.insertNeighbors(twinQueue, twinNode);
 
             node = queue.delMin();
+            twinNode = twinQueue.delMin();
         }
 
         return node;
     }
 
+    private void insertNeighbors(MinPQ<SearchNode> queue, SearchNode node) {
+        Iterable<Board> neighbors = node.board.neighbors();
+        for (Board neighbor : neighbors) {
+            if (node.previous != null && neighbor.equals(node.previous.board)) {
+                continue;
+            }
+
+            int newMovesCount = node.moves + 1;
+            SearchNode nodeToInsert = new SearchNode(neighbor, newMovesCount, node);
+            queue.insert(nodeToInsert);
+        }
+    }
+
     // is the initial board solvable? (see below)
     public boolean isSolvable() {
-        return this.originalOutcome.board.isGoal();
+        return this.outcome.board.isGoal();
     }
 
     // min number of moves to solve initial board
     public int moves() {
-        return this.originalOutcome.moves;
+        return this.outcome.moves;
     }
 
     // sequence of boards in a shortest solution
     public Iterable<Board> solution() {
         Stack<Board> solution = new Stack<Board>();
 
-        SearchNode node = this.originalOutcome;
+        SearchNode node = this.outcome;
         while (node != null) {
             solution.push(node.board);
             node = node.previous;
@@ -108,26 +112,17 @@ public class Solver {
 
     // test client (see below)
     public static void main(String[] args) {
-        int[][] tiles = new int[][] {
-                { 0, 1, 3 },
-                { 4, 2, 5 },
-                { 7, 8, 6 }
-        };
-
-        Board initial = new Board(tiles);
-        Solver solver = new Solver(initial);
-
         // create initial board from file
-        // In in = new In(args[0]);
-        // int n = in.readInt();
-        // int[][] tiles = new int[n][n];
-        // for (int i = 0; i < n; i++)
-        //     for (int j = 0; j < n; j++)
-        //         tiles[i][j] = in.readInt();
-        // Board initial = new Board(tiles);
+        In in = new In(args[0]);
+        int n = in.readInt();
+        int[][] tiles = new int[n][n];
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                tiles[i][j] = in.readInt();
+        Board initial = new Board(tiles);
         //
         // // solve the puzzle
-        // Solver solver = new Solver(initial);
+        Solver solver = new Solver(initial);
         //
         // print solution to standard output
         if (!solver.isSolvable())
