@@ -94,15 +94,19 @@ public class Solver {
 
     // min number of moves to solve initial board
     public int moves() {
-        if (this.isSolvable()) {
-            return this.outcome.moves;
+        if (!this.isSolvable()) {
+            return -1;
         }
 
-        return -1;
+        return this.outcome.moves;
     }
 
     // sequence of boards in a shortest solution
     public Iterable<Board> solution() {
+        if (!this.isSolvable()) {
+            return null;
+        }
+
         Stack<Board> solution = new Stack<Board>();
 
         SearchNode node = this.outcome;
