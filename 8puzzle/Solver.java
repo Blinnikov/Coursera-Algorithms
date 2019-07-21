@@ -17,6 +17,7 @@ public class Solver {
         private Board board;
         private int moves;
         private SearchNode previous;
+        private int manhattanDistance;
 
         public SearchNode(Board board) {
             this(board, 0, null);
@@ -26,6 +27,8 @@ public class Solver {
             this.board = board;
             this.moves = moves;
             this.previous = previous;
+
+            this.manhattanDistance = board.manhattan() + moves;
         }
     }
 
@@ -34,9 +37,7 @@ public class Solver {
 
     private static class ByManhattanDistance implements Comparator<SearchNode> {
         public int compare(SearchNode first, SearchNode second) {
-            int manhattanOne = first.board.manhattan() + first.moves;
-            int manhattanTwo = second.board.manhattan() + second.moves;
-            return manhattanOne - manhattanTwo;
+            return first.manhattanDistance - second.manhattanDistance;
         }
     }
 
@@ -44,6 +45,9 @@ public class Solver {
 
     // find a solution to the initial board (using the A* algorithm)
     public Solver(Board initial) {
+        if (initial == null) {
+            throw new IllegalArgumentException("Board cannot be null");
+        }
 
         SearchNode initialSearchNode = new SearchNode(initial);
 
