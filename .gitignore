@@ -7,7 +7,11 @@ CREDITS
 02.Queues/ResizingArrayStack.java
 02.Queues/LinkedStack.java
 03.Collinear/LineSegment.java
-8puzzle/PuzzleChecker.java
+04.8-puzzle/PuzzleChecker.java
+kdtree/KdTreeVisualizer.java
+kdtree/KdTreeGenerator.java
+kdtree/NearestNeighborVisualizer.java
+kdtree/RangeSearchVisualizer.java
 CollidingDisks.java
 
 *.zip
