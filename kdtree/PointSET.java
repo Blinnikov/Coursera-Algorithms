@@ -78,11 +78,15 @@ public class PointSET {
             throw new IllegalArgumentException("point is null");
         }
 
-        double minDistance = 1.0;
-        Point2D result = null;
+        if (this.size() == 0) {
+            return null;
+        }
+
+        double minDistance = 2.0;
+        Point2D result = new Point2D(0, 0);
 
         for (Point2D point : this.points) {
-            double currentDistance = p.distanceTo(point);
+            double currentDistance = p.distanceSquaredTo(point);
             if (currentDistance < minDistance) {
                 minDistance = currentDistance;
                 result = point;
